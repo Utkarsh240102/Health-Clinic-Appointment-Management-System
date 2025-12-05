@@ -1,0 +1,188 @@
+.dashboard {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.loading {
+  text-align: center;
+  padding: 4rem;
+  color: #64748b;
+  font-size: 1.125rem;
+}
+
+.header {
+  margin-bottom: 2rem;
+}
+
+.header h1 {
+  font-size: 2rem;
+  color: #1e293b;
+  margin-bottom: 0.5rem;
+}
+
+.subtitle {
+  color: #64748b;
+  font-size: 1.125rem;
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+}
+
+.statCard {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.statIcon {
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.statContent {
+  display: flex;
+  flex-direction: column;
+}
+
+.statValue {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1e293b;
+  line-height: 1;
+}
+
+.statLabel {
+  color: #64748b;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+}
+
+.section {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.section h2 {
+  font-size: 1.5rem;
+  color: #1e293b;
+  margin-bottom: 1.5rem;
+}
+
+.emptyState {
+  text-align: center;
+  padding: 3rem;
+  color: #94a3b8;
+}
+
+.emptyState p {
+  margin-top: 1rem;
+  font-size: 1.125rem;
+}
+
+.appointmentList {
+  display: grid;
+  gap: 1rem;
+}
+
+.appointmentCard {
+  padding: 1.5rem;
+  border: 2px solid #f1f5f9;
+  border-radius: 12px;
+  transition: all 0.2s;
+}
+
+.appointmentCard:hover {
+  border-color: #e2e8f0;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.appointmentHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.appointmentStatus {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.iconScheduled { color: #f59e0b; }
+.iconConfirmed { color: #10b981; }
+.iconCompleted { color: #6366f1; }
+.iconCancelled { color: #ef4444; }
+.iconNoShow { color: #f97316; }
+
+.statusBadge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.statusBadge.scheduled {
+  background: #fef3c7;
+  color: #f59e0b;
+}
+
+.statusBadge.confirmed {
+  background: #d1fae5;
+  color: #10b981;
+}
+
+.statusBadge.completed {
+  background: #e0e7ff;
+  color: #6366f1;
+}
+
+.statusBadge.cancelled {
+  background: #fee2e2;
+  color: #ef4444;
+}
+
+.statusBadge.no_show {
+  background: #ffedd5;
+  color: #f97316;
+}
+
+.appointmentDate {
+  color: #64748b;
+  font-weight: 500;
+}
+
+.appointmentBody {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.appointmentTime {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.appointmentReason {
+  color: #1e293b;
+  font-weight: 600;
+}
