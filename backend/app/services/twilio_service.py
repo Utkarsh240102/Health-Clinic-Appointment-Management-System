@@ -47,12 +47,31 @@ async def log_twilio_message(
 async def send_sms(to: str, body: str, from_number: str = None, appointment_id: str = None) -> Dict[str, Any]:
     """
     Send SMS via Twilio with retry and logging
+    Smart filtering: Skip fake test numbers (+1555*) but send to real numbers
     """
     if from_number is None:
         from_number = settings.TWILIO_FROM_PATIENT
     
+    # Skip fake seeded test numbers to avoid Twilio errors
+    if to.startswith("+1555"):
+        print(f"⏭️ Skipping SMS to test number: {to}")
+        log_id = await log_twilio_message(
+            to=to,
+            from_=from_number,
+            body=body,
+            status="skipped",
+            direction="outbound",
+            appointment_id=appointment_id,
+            error_message="Test number - not sent"
+        )
+        return {
+            "success": True,
+            "skipped": True,
+            "log_id": log_id
+        }
+    
     try:
-        # Send message
+        # Send message to real numbers only
         message = twilio_client.messages.create(
             to=to,
             from_=from_number,
@@ -160,6 +179,7 @@ async def send_reminder_sms(appointment: Dict[str, Any]):
 async def send_no_show_notification(appointment: Dict[str, Any]):
     """
     Send no-show notification to both patient and doctor
+    Smart filtering: Only sends to real phone numbers (skips +1555* test numbers)
     """
     users_collection = get_users_collection()
     
@@ -189,7 +209,7 @@ async def send_no_show_notification(appointment: Dict[str, Any]):
         f"Appointment has been marked as no-show."
     )
     
-    # Send to both
+    # Send to both (will auto-skip test numbers)
     await send_sms(
         to=patient["phone"],
         body=patient_body,
@@ -208,6 +228,7 @@ async def send_no_show_notification(appointment: Dict[str, Any]):
 async def send_confirmation_notification(appointment: Dict[str, Any]):
     """
     Send confirmation notification to doctor
+    Smart filtering: Only sends to real phone numbers (skips +1555* test numbers)
     """
     users_collection = get_users_collection()
     
@@ -238,6 +259,7 @@ async def send_confirmation_notification(appointment: Dict[str, Any]):
 async def send_cancellation_notification(appointment: Dict[str, Any]):
     """
     Send cancellation notification to doctor
+    Smart filtering: Only sends to real phone numbers (skips +1555* test numbers)
     """
     users_collection = get_users_collection()
     

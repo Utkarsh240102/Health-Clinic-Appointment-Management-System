@@ -10,6 +10,8 @@ export default function MyAppointments() {
   const [appointments, setAppointments] = useState([])
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState('all')
+  const [confirmingId, setConfirmingId] = useState(null)
+  const [cancellingId, setCancellingId] = useState(null)
 
   useEffect(() => {
     if (user) {
@@ -23,28 +25,45 @@ export default function MyAppointments() {
       setAppointments(data || [])
     } catch (error) {
       console.error('Failed to fetch appointments:', error)
+      alert('Failed to load appointments. Please try again.')
     } finally {
       setLoading(false)
     }
   }
 
   const handleConfirm = async (id) => {
+    setConfirmingId(id)
     try {
       await appointmentAPI.confirm(id)
-      fetchAppointments()
+      // Update local state immediately for instant feedback
+      setAppointments(prev => prev.map(apt => 
+        apt._id === id ? { ...apt, status: 'confirmed' } : apt
+      ))
+      alert('✅ Appointment confirmed successfully!')
     } catch (error) {
       console.error('Failed to confirm appointment:', error)
+      alert('❌ Failed to confirm appointment. Please try again.')
+    } finally {
+      setConfirmingId(null)
     }
   }
 
   const handleCancel = async (id) => {
     if (!window.confirm('Are you sure you want to cancel this appointment?')) return
     
+    setCancellingId(id)
     try {
       await appointmentAPI.cancel(id)
-      fetchAppointments()
+      // Update local state immediately
+      setAppointments(prev => prev.map(apt => 
+        apt._id === id ? { ...apt, status: 'cancelled' } : apt
+      ))
+      alert('✅ Appointment cancelled successfully!')
     } catch (error) {
       console.error('Failed to cancel appointment:', error)
+      alert('❌ Failed to cancel appointment. Please try again.')
+    } finally {
+      setCancellingId(null)
     }
   }
 
@@ -170,9 +189,10 @@ export default function MyAppointments() {
                         <button 
                           onClick={() => handleConfirm(appointment._id)}
                           className={styles.btnConfirm}
+                          disabled={confirmingId === appointment._id}
                         >
                           <Check size={16} />
-                          Confirm Now
+                          {confirmingId === appointment._id ? 'Confirming...' : 'Confirm Now'}
                         </button>
                         <div className={styles.confirmNote}>
                           ⏰ Confirm within 2:45 hours or appointment will be auto-cancelled
@@ -186,18 +206,24 @@ export default function MyAppointments() {
                     <button 
                       onClick={() => handleCancel(appointment._id)}
                       className={styles.btnCancel}
+                      disabled={cancellingId === appointment._id}
                     >
                       <X size={16} />
-                      Cancel
+                      {cancellingId === appointment._id ? 'Cancelling...' : 'Cancel'}
                     </button>
                   </>
                 )}
 
                 {user.role === 'patient' && appointment.status === 'confirmed' && (
                   <>
+                    <div className={styles.confirmedBadge}>
+                      <CheckCircle size={18} />
+                      Appointment Confirmed ✓
+                    </div>
                     <button 
                       onClick={() => handleCancel(appointment._id)}
                       className={styles.btnCancel}
+                      disabled={cancellingId === appointment._id}
                     >
                       <X size={16} />
                       Cancel

@@ -239,7 +239,10 @@ async def update_appointment_status(
         from app.services.twilio_service import send_cancellation_notification
         await send_cancellation_notification(updated)
     
+    # Convert ObjectIds to strings for JSON serialization
     updated["_id"] = str(updated["_id"])
+    updated["doctorId"] = str(updated["doctorId"])
+    updated["patientId"] = str(updated["patientId"])
     return updated
 
 
